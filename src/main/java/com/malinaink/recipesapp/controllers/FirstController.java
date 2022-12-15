@@ -21,6 +21,4 @@ public class FirstController {
                 "Фреймворк: Spring;<br>" +
                 "Сборщик: MAVEN<br>";
     }
-
-
 }

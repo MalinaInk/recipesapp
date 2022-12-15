@@ -1,0 +1,9 @@
+{
+  "Creator": "Малиничева Наталья",
+  "ProjectName": "Приложение для сайта рецептов",
+  "Date of creation": "15.12.2022",
+  "Description": "WEB-приложение для работы с сайтом рецептов",
+  "Language": "java",
+  "Framework": "Spring",
+  "Build Tool": "MAVEN"
+}

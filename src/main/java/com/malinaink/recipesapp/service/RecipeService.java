@@ -3,6 +3,7 @@ package com.malinaink.recipesapp.service;
 import com.malinaink.recipesapp.model.Ingredient;
 import com.malinaink.recipesapp.model.Recipe;
 
+import java.util.Collection;
 import java.util.Map;
 
 public interface RecipeService {
@@ -11,4 +12,10 @@ public interface RecipeService {
 
         Recipe readRecipe(long id);
 
+        Recipe updateRecipe(long id, Recipe newRecipe);
+
+
+        Recipe deleteRecipe(long id);
+
+        Collection<Recipe> readAllRecipe();
 }

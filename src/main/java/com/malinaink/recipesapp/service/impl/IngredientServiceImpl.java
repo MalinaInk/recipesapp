@@ -25,4 +25,27 @@ public class IngredientServiceImpl implements IngredientService {
         }
         return ingredients.get(id);
     }
+    @Override
+    public Ingredient updateIngredient(long id, Ingredient newIngredient) {
+        Ingredient oldIngredient = readIngredient(id);
+        oldIngredient.setIngredientName(newIngredient.getIngredientName());
+        oldIngredient.setMeasure(newIngredient.getMeasure());
+        oldIngredient.setQuantity(newIngredient.getQuantity());
+        ingredients.put(id, oldIngredient);
+        return newIngredient;
+    }
+
+    @Override
+    public Ingredient deleteIngredient(long id) {
+        if (!ingredients.containsKey(id)) {
+            throw new IngredientNotFoundException(id);
+        }
+        return ingredients.remove(id);
+    }
+
+    @Override
+    public Collection<Ingredient> readAllIngredient() {
+        return ingredients.values();
+    }
+
 }

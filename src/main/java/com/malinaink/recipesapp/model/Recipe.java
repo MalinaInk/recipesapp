@@ -7,12 +7,22 @@ import java.util.List;
 public class Recipe {
     private String recipeName;
     private int cookingTime;
-    private final List <Ingredient> ingredients = new ArrayList<>();
-    private final List <String> steps = new ArrayList<>();
+    private List <Ingredient> ingredients;
+    private List <String> steps;
 
     public Recipe(String recipeName, int cookingTime) {
         this.recipeName = recipeName;
         this.cookingTime = cookingTime;
+        this.ingredients = new ArrayList<>();
+        this.steps = new ArrayList<>();
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public void setSteps(List<String> steps) {
+        this.steps = steps;
     }
 
     public String getRecipeName() {

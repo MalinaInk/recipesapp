@@ -10,7 +10,7 @@ public interface IngredientService {
 
     Ingredient readIngredient(long id);
 
-    Ingredient updateIngredient(long id, Ingredient newIngredient);
+    Ingredient updateIngredient(long id, Ingredient ingredient);
 
     Ingredient deleteIngredient(long id);
 

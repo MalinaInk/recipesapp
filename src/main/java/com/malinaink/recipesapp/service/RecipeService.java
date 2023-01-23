@@ -12,8 +12,7 @@ public interface RecipeService {
 
         Recipe readRecipe(long id);
 
-        Recipe updateRecipe(long id, Recipe newRecipe);
-
+        Recipe updateRecipe(long id, Recipe recipe);
 
         Recipe deleteRecipe(long id);
 

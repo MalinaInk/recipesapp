@@ -11,4 +11,9 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(String.format("Ингредиент с id = %id не найден!", e.getId()));
     }
+    @org.springframework.web.bind.annotation.ExceptionHandler(RecipeNotFoundException.class)
+    public ResponseEntity<String> handleRecipeNotFoundException (RecipeNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(String.format("Рецепт с id = %id не найден!", e.getId()));
+    }
 }

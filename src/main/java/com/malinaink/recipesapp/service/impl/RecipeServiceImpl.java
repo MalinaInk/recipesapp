@@ -29,14 +29,11 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe updateRecipe(long id, Recipe newRecipe) {
-        Recipe oldRecipe = readRecipe(id);
-        oldRecipe.setRecipeName(newRecipe.getRecipeName());
-        oldRecipe.setCookingTime(newRecipe.getCookingTime());
-        oldRecipe.setIngredients(newRecipe.getIngredients());
-        oldRecipe.setSteps(newRecipe.getSteps());
-        recipes.put(id,oldRecipe);
-        return newRecipe;
+    public Recipe updateRecipe(long id, Recipe recipe) {
+        if (!recipes.containsKey(id)) {
+            throw new RecipeNotFoundException(id);
+        }
+        return recipes.put(id,recipe);
     }
 
     @Override

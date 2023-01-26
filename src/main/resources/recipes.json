@@ -1,0 +1,16 @@
+{
+  "1": {
+    "recipeName": "eggs",
+    "cookingTime": 20,
+    "ingredients": [
+      {
+        "ingredientName": "egg",
+        "quantity": 3,
+        "measure": "string"
+      }
+    ],
+    "steps": [
+      "string"
+    ]
+  }
+}

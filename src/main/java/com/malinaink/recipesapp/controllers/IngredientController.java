@@ -18,7 +18,7 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "Создание ингредиента", description = "Принимает заполненные поля, создает объект, присваивает ему уникальный идентификатор")
     public Ingredient create(@RequestBody Ingredient ingredient) {
         return ingredientService.createIngredient(ingredient);

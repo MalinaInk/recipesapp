@@ -18,7 +18,7 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "Создание рецепта", description = "Принимает заполненные поля, создает объект, присваивает ему уникальный идентификатор")
     public Recipe create(@RequestBody Recipe recipe) {
         return recipeService.createRecipe(recipe);

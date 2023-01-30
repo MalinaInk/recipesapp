@@ -1,7 +1,1 @@
-{
-  "1": {
-    "ingredientName": "milk",
-    "quantity": 10,
-    "measure": "string"
-  }
-}
+{"1":{"ingredientName":"coconut","quantity":2,"measure":"inch"},"2":{"ingredientName":"eggs","quantity":3,"measure":"inch"},"3":{"ingredientName":"tomato","quantity":2,"measure":"inch"}}

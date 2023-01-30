@@ -3,17 +3,27 @@ package com.malinaink.recipesapp.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.malinaink.recipesapp.exception.FileDownloadException;
+import com.malinaink.recipesapp.exception.FileUploadException;
 import com.malinaink.recipesapp.exception.RecipeNotFoundException;
 import com.malinaink.recipesapp.model.Recipe;
 import com.malinaink.recipesapp.service.FilesService;
 import com.malinaink.recipesapp.service.RecipeService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -21,8 +31,13 @@ public class RecipeServiceImpl implements RecipeService {
 
     private long idGenerator = 1;
     private HashMap<Long, Recipe> recipes = new HashMap<>();
-    @Value("${path.to.data.file1}")
-    private String dataFilePath1;
+
+
+    @Value("${path.to.recipes.data.file}")
+    private String recipesDataFile;
+
+    @Value("${path.to.import.recipes.data.file}")
+    private String importRecipesDataFile;
 
     public RecipeServiceImpl(FilesService filesService) {
         this.filesService = filesService;
@@ -69,14 +84,14 @@ public class RecipeServiceImpl implements RecipeService {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(recipes);
-            filesService.saveToFile(json, dataFilePath1);
+            filesService.saveToFile(json, recipesDataFile);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void readFromFile() {
-        String json = filesService.readFromFile(dataFilePath1);
+        String json = filesService.readFromFile(recipesDataFile);
         try {
             recipes = new ObjectMapper().readValue(json, new TypeReference<HashMap<Long, Recipe>>() {
             });
@@ -85,9 +100,21 @@ public class RecipeServiceImpl implements RecipeService {
         }
     }
 
+    @Override
+    public File downloadDataFile() {
+        return filesService.getDataFile(recipesDataFile);
+        }
+    @Override
+    public File uploadRecipesDatafile() {
+        filesService.cleanToFile(importRecipesDataFile);
+        File dataFile = filesService.getDataFile(importRecipesDataFile);
+        return dataFile;
+    }
+
     @PostConstruct
     private void init() {
         readFromFile();
     }
+
 }
 

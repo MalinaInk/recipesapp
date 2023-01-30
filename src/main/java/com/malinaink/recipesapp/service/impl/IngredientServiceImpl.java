@@ -4,20 +4,32 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.malinaink.recipesapp.exception.IngredientNotFoundException;
+import com.malinaink.recipesapp.exception.ReadFileException;
 import com.malinaink.recipesapp.model.Ingredient;
-import com.malinaink.recipesapp.model.Recipe;
 import com.malinaink.recipesapp.service.FilesService;
 import com.malinaink.recipesapp.service.IngredientService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
-    @Value("${path.to.data.file2}")
-    private String dataFilePath2;
+
+
+    @Value("${path.to.ingredients.data.file}")
+    private String ingredientsDtaFile;
+
+    @Value("${path.to.import.ingredients.data.file}")
+    private String importIngredientsDataFile;
 
     final private FilesService filesService;
     private HashMap<Long, Ingredient> ingredients = new HashMap<>();
@@ -69,14 +81,15 @@ public class IngredientServiceImpl implements IngredientService {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredients);
-            filesService.saveToFile(json, dataFilePath2);
+            filesService.saveToFile(json, ingredientsDtaFile);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void readFromFile() {
-        String json = filesService.readFromFile(dataFilePath2);
+    @Override
+    public void readFromFile() {
+        String json = filesService.readFromFile(ingredientsDtaFile);
         try {
             ingredients = new ObjectMapper().readValue(json, new TypeReference<HashMap<Long, Ingredient>>() {
             });
@@ -84,6 +97,14 @@ public class IngredientServiceImpl implements IngredientService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public File uploadIngredientsDatafile() {
+        filesService.cleanToFile(importIngredientsDataFile);
+        File dataFile = filesService.getDataFile(importIngredientsDataFile);
+        return dataFile;
+    }
+
     @PostConstruct
     private void init() {
         readFromFile();

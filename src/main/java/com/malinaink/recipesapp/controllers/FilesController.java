@@ -37,38 +37,27 @@ public class FilesController {
     @Tag(name = "Выгрузка рецептов", description = "Позволяет выгрузить добавленные рецепты в виде json-файла")
     public ResponseEntity<InputStreamResource> downloadDataFile() throws FileDownloadException, FileNotFoundException {
         File file = recipeService.downloadDataFile();
-            if (file.exists()) {
-                return
-                        ResponseEntity.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .contentLength(file.length())
-                                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename = \"RecipesLog.json\"")
-                                .body(new InputStreamResource(new FileInputStream(file)));
-            } else throw new FileDownloadException("Произошла ошибка при скачивании файла");
+        if (file.exists()) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentLength(file.length())
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename = \"RecipesLog.json\"")
+                    .body(new InputStreamResource(new FileInputStream(file)));
+        } else throw new FileDownloadException("Произошла ошибка при скачивании файла");
     }
 
     @PostMapping(path = "recipes/import/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Tag(name = "Загрузка рецептов", description = "Позволяет загрузить рецепты в виде json-файла на диск")
     public ResponseEntity<Void> uploadRecipesDatafile(@RequestParam MultipartFile file) throws FileUploadException {
-        File dataFile = recipeService.uploadRecipesDatafile();
-        try (FileOutputStream fos = new FileOutputStream(dataFile)) {
-            IOUtils.copy(file.getInputStream(), fos);
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-            throw new FileUploadException("Произошла ошибка при загрузке файла");
-        }
+        recipeService.uploadRecipesDatafile(file);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping(path = "ingredients/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Tag(name = "Загрузка ингредиентов", description = "Позволяет загрузить ингредиенты в виде json-файла на диск")
     public ResponseEntity<Void> uploadIngredientsDatafile(@RequestParam MultipartFile file) throws FileUploadException {
-        File dataFile = ingredientService.uploadIngredientsDatafile();
-        try (FileOutputStream fos = new FileOutputStream(dataFile)) {
-            IOUtils.copy(file.getInputStream(), fos);
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-            throw new FileUploadException("Произошла ошибка при загрузке файла");
-        }
+        ingredientService.uploadIngredientsDatafile(file);
+        return ResponseEntity.ok().build();
     }
 }
 

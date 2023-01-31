@@ -105,9 +105,14 @@ public class RecipeServiceImpl implements RecipeService {
         return filesService.getDataFile(recipesDataFile);
         }
     @Override
-    public File uploadRecipesDatafile() {
+    public File uploadRecipesDatafile(@RequestParam MultipartFile file) throws FileUploadException {
         filesService.cleanToFile(importRecipesDataFile);
         File dataFile = filesService.getDataFile(importRecipesDataFile);
+        try (FileOutputStream fos = new FileOutputStream(dataFile)) {
+            IOUtils.copy(file.getInputStream(), fos);
+        } catch (IOException e) {
+            throw new FileUploadException("Произошла ошибка при загрузке файла");
+        }
         return dataFile;
     }
 

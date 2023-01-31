@@ -3,6 +3,7 @@ package com.malinaink.recipesapp.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.malinaink.recipesapp.exception.FileUploadException;
 import com.malinaink.recipesapp.exception.IngredientNotFoundException;
 import com.malinaink.recipesapp.exception.ReadFileException;
 import com.malinaink.recipesapp.model.Ingredient;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -50,20 +52,21 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Ingredient readIngredient(long id) {
 
-        if(!ingredients.containsKey(id)) {
+        if (!ingredients.containsKey(id)) {
             throw new IngredientNotFoundException(id);
         }
         return ingredients.get(id);
     }
+
     @Override
     public Ingredient updateIngredient(long id, Ingredient ingredient) {
 
         if (!ingredients.containsKey(id)) {
             throw new IngredientNotFoundException(id);
         }
-         ingredients.put(id, ingredient);
-         saveToFile();
-         return ingredient;
+        ingredients.put(id, ingredient);
+        saveToFile();
+        return ingredient;
     }
 
     @Override
@@ -78,6 +81,7 @@ public class IngredientServiceImpl implements IngredientService {
     public Collection<Ingredient> readAllIngredient() {
         return ingredients.values();
     }
+
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredients);
@@ -99,9 +103,14 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public File uploadIngredientsDatafile() {
+    public File uploadIngredientsDatafile(@RequestParam MultipartFile file) throws FileUploadException {
         filesService.cleanToFile(importIngredientsDataFile);
         File dataFile = filesService.getDataFile(importIngredientsDataFile);
+        try (FileOutputStream fos = new FileOutputStream(dataFile)) {
+            IOUtils.copy(file.getInputStream(), fos);
+        } catch (IOException e) {
+            throw new FileUploadException("Произошла ошибка при загрузке файла");
+        }
         return dataFile;
     }
 

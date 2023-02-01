@@ -12,21 +12,23 @@ import java.io.FileNotFoundException;
 @RestControllerAdvice
 public class ExceptionHandlerClass {
     @ExceptionHandler(IngredientNotFoundException.class)
-    public ResponseEntity<String> handleIngredientNotFoundException (IngredientNotFoundException e) {
+    public ResponseEntity<String> handleIngredientNotFoundException(IngredientNotFoundException e) {
         log.error(e.getMessage(), e);
         System.out.println("Нет запрашиваемого ингредиента в мапе");
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(String.format("Ингредиент с id = %d не найден!", e.getId()));
     }
+
     @ExceptionHandler(RecipeNotFoundException.class)
-    public ResponseEntity<String> handleRecipeNotFoundException (RecipeNotFoundException e) {
+    public ResponseEntity<String> handleRecipeNotFoundException(RecipeNotFoundException e) {
         log.error(e.getMessage(), e);
         System.out.println("Нет запрашиваемого рецептата в мапе");
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(String.format("Рецепт с id = %d не найден!", e.getId()));
     }
+
     @ExceptionHandler(ReadFileException.class)
-    public ResponseEntity<String> handleFileNotFoundException (ReadFileException e) {
+    public ResponseEntity<String> handleFileNotFoundException(ReadFileException e) {
         log.error(e.getMessage(), e);
 //      System.err.println();
         System.out.println("Файл по такому пути не существует");
@@ -35,7 +37,7 @@ public class ExceptionHandlerClass {
     }
 
     @ExceptionHandler(FileDownloadException.class)
-    public ResponseEntity<String> handleFileDownloadException (Exception e) {
+    public ResponseEntity<String> handleFileDownloadException(Exception e) {
         log.error(e.getMessage(), e);
         System.out.println("Ошибка загрузки файла");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -43,10 +45,17 @@ public class ExceptionHandlerClass {
     }
 
     @ExceptionHandler({FileUploadException.class, FileNotFoundException.class})
-    public ResponseEntity<String> handleFileUploadException (Exception e) {
+    public ResponseEntity<String> handleFileUploadException(Exception e) {
         log.error(e.getMessage(), e);
         System.out.println("Ошибка скачивания файла");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Не удалось загрузить файл!");
+    }
+
+    @ExceptionHandler(EmptyFileException.class)
+    public ResponseEntity<String> handleEmptyFileException(Exception e) {
+        log.error(e.getMessage(), e);
+        System.out.println("Данные в файле отсутствуют");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

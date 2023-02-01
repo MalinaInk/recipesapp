@@ -2,6 +2,7 @@ package com.malinaink.recipesapp.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public interface FilesService {
     boolean saveToFile(String json, String path);
@@ -12,5 +13,5 @@ public interface FilesService {
 
     File getDataFile(String path);
 
-
+    Path createTempFile(String suffix);
 }
